@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            padding: 10px;
+            width: 120px;
+            text-align: center;
+            font-size: 1.3em;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #00ff0d;
+            transform: scale(1.05);
+            outline: none;
+        }
+
+        select {
+            width: 350px;
+            height: 40px;
+            font-size: 1.2em;
+            color: #4CAF50;
+            border: 2px solid #4CAF50;
+            border-radius: 7px;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        select:focus {
+            border-color: #00ff0d;
+            transform: scale(1.05);
+        }
+
+        fieldset {
+            width: 140px;
+            margin: 10px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            background-color: #fff;
+            padding: 10px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        legend {
+            font-weight: bold;
+            color: #4CAF50;
+            cursor: pointer;
+        }
+
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #00ff0d;
+            color: black;
+            transform: scale(1.05);
+        }
+        .result {
+            font-size: 1.2em;
+            color: #4CAF50;
+            margin-left: 10px;
+            opacity: 0;
+            transform: scale(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        #Get {
+            font-size: 1.2em;
+            color: #4CAF50;
+            margin-left: 10px;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        #inputFields {
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            display: block;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .slide-in {
+            display: block;
+            animation: slideIn 0.5s forwards;
+        }
+        #resultDiv{
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <select id="operationSelect" onchange="handleOperationChange()">
+        <option selected disabled value="">Select Operation</option>
+        <option value="calculateInvestment">Get investment From % and Profit</option>
+        <option value="calculateInvestmentFromPercentage">Get % From Investment and Profit</option>
+        <option value="getAmountFromInvestment">Get Profit From Investment and %</option>
+        <option value="getPercentageFromCostAndSale">Get Percentage From Cost And Sale</option>
+        <option value="getProfitFromCostAndSale">Get Profit From Cost And Sale</option>
+        <option value="getProfitFromPurchaseAnd%">Get Profit From Purchase And Sale %</option>
+    </select>
+
+    <div id="inputFields" style="display: none;">
+        <div style="display: flex; justify-content: space-around;">
+            <fieldset onclick="focusInput('input1')">
+                <legend onclick="focusInput('input1')" id="legend1"></legend>
+                <input type="number" class="input-field" id="input1" placeholder="" oninput="updateFields()">
+            </fieldset>
+            <fieldset onclick="focusInput('input2')">
+                <legend onclick="focusInput('input2')" id="legend2"></legend>
+                <input type="number" class="input-field" id="input2" placeholder="" oninput="updateFields()">
+            </fieldset>
+        </div>
+        <div style="display: flex;width: 300px;">
+
+            <div id="Get"></div>
+            <div class="result" id="resultDiv"></div>
+        </div>
+    </div>
+
+    <button class="button" onclick="resetFields()">Reset</button>
+
+    <script>
+        function handleOperationChange() {
+            const operation = document.getElementById('operationSelect').value;
+            if (operation === 'calculateInvestment') {
+                document.getElementById('legend1').innerHTML = 'Profit'
+                document.getElementById('legend2').innerHTML = '%'
+                document.getElementById('Get').innerHTML = 'Investment : '
+            }
+            else if (operation === 'calculateInvestmentFromPercentage') {
+                document.getElementById('legend1').innerHTML = 'Investment'
+                document.getElementById('legend2').innerHTML = 'Profit'
+                document.getElementById('Get').innerHTML = '% : '
+
+            }
+            else if (operation === 'getAmountFromInvestment') {
+                document.getElementById('legend1').innerHTML = 'Investment'
+                document.getElementById('legend2').innerHTML = '%'
+                document.getElementById('Get').innerHTML = 'Profit : '
+
+            }
+            else if (operation === 'getPercentageFromCostAndSale') {
+                document.getElementById('legend1').innerHTML = 'Cost'
+                document.getElementById('legend2').innerHTML = 'Sale'
+                document.getElementById('Get').innerHTML = 'Cost %  : '
+
+            } else if (operation === 'getProfitFromCostAndSale') {
+                document.getElementById('legend1').innerHTML = 'Cost'
+                document.getElementById('legend2').innerHTML = 'Sale'
+                document.getElementById('Get').innerHTML = 'Profit  : '
+
+            }
+            else if (operation === 'getProfitFromPurchaseAnd%') {
+                document.getElementById('legend1').innerHTML = 'Purchase'
+                document.getElementById('legend2').innerHTML = 'Sale %'
+                document.getElementById('Get').innerHTML = 'Before Sale : '
+
+            }
+            const inputFields = document.getElementById('inputFields');
+
+            if (operation) {
+                inputFields.style.display = 'block';
+                resetFields(); // Clear fields when operation changes
+                inputFields.style.opacity = '1'
+            } else {
+                inputFields.style.display = 'none';
+                document.getElementById('resultDiv').innerText = '';
+                inputFields.style.opacity = '0'
+            }
+        }
+
+        function updateFields() {
+            const input1 = parseFloat(document.getElementById('input1').value);
+            const input2 = parseFloat(document.getElementById('input2').value);
+            const operation = document.getElementById('operationSelect').value;
+            let result;
+
+            if (operation === 'calculateInvestment') {
+                // Calculate percentage from input1 and input2
+                if (!isNaN(input1) && !isNaN(input2) && input1 > 0) {
+                    result = input1 * 100 / input2 // Profit as percentage
+                }
+            }
+            else if (operation === 'calculateInvestmentFromPercentage') {
+                // Calculate investment based on percentage input
+                if (!isNaN(input1) && !isNaN(input2) && input2 > 0) {
+                    result = ((input2 / input1) * 100) // Investment calculation
+                }
+            }
+            else if (operation === 'getAmountFromInvestment') {
+                // Calculate amount from input values
+                if (!isNaN(input1) && !isNaN(input2)) {
+                    result = input1 / 100 * input2// Assuming input1 as investment and input2 as some multiplier
+                }
+            }
+            else if (operation === 'getPercentageFromCostAndSale') {
+                // Calculate amount from input values
+                if (!isNaN(input1) && !isNaN(input2)) {
+                    result = (input1 / input2 * 100) // Assuming input1 as investment and input2 as some multiplier
+                }
+            } else if (operation === 'getProfitFromCostAndSale') {
+                // Calculate amount from input values
+                if (!isNaN(input1) && !isNaN(input2)) {
+                    result = (input2 - input1) // Assuming input1 as investment and input2 as some multiplier
+                }
+            } else if (operation === 'getProfitFromPurchaseAnd%') {
+                // Calculate amount from input values
+                if (!isNaN(input1) && !isNaN(input2)) {
+                    let a = (1 - (input2 / 100))
+                    b = a * input1
+                    c = input1 - b
+                    d = c + input1
+
+
+                    result = d
+                    // result = ((1-(input2/100))*input1)+(input1) // Assuming input1 as investment and input2 as some multiplier
+                }
+            }
+
+
+            if (result !== undefined) {
+                document.getElementById('resultDiv').innerText = ` ${result ? result.toFixed(2) : 'Error'}`;
+                document.getElementById('resultDiv').style.opacity = '1';
+                resultDiv.style.transform = 'scale(1)';
+
+            } else {
+                document.getElementById('resultDiv').innerText = '';
+            }
+        }
+        const resultDiv = document.getElementById('resultDiv');
+           // Animation effect
+           resultDiv.classList.remove('result');
+            void resultDiv.offsetWidth; // Trigger reflow
+            resultDiv.classList.add('result');
+
+        function focusInput(inputId) {
+            document.getElementById(inputId).focus();
+        } onclick="focusInput('input1')"
+        function resetFields() {
+            document.getElementById('input1').value = '';
+            document.getElementById('input2').value = '';
+            document.getElementById('resultDiv').innerText = '';
+            document.getElementById('resultDiv').style.opacity = '1'; // Fade out result
+            document.getElementById('resultDiv').style.transform = 'scale(0)'; // Reset scale
+
+
+        }
+    </script>
+</body>
+
+</html>
